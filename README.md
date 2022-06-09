@@ -16,10 +16,11 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.1 (Database File SQL)
+- SQLite setting
+- Functions package created (create, get and add to DB, ask file name)
+
 ### 0.1 (Project Start)
 - GitHub page creation
 - Basic Tkinter app creation
 - App plan organization
-
-
-
