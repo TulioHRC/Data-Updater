@@ -15,3 +15,11 @@ Objectives:
 - Useful
 - Adaptable
 
+Log:
+### 0.1 (Project Start)
+- GitHub page creation
+- Basic Tkinter app creation
+- App plan organization
+
+
+
