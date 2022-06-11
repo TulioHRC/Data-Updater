@@ -24,7 +24,10 @@ def addToDatabase(name, schema, content): # schema format here is "column1, colu
     con = sql.connect("./data/data.sqlite")
     cur = con.cursor()
 
-    cur.execute(f"INSERT INTO {name} ({schema}) VALUES (?)", (content,)) # content format is (value1, value2, ...)
+    intergs = "?," * len(content)
+    intergs = intergs[:-1]
+
+    cur.execute(f"INSERT INTO {name} ({schema}) VALUES ({intergs})", content) # content format is (value1, value2, ...)
     con.commit()
 
     con.close()
@@ -38,3 +41,5 @@ def getDatabase(name):
     con.close()
 
     return df
+
+#def removeFromDatabase(name, pos): # Remove row from database
