@@ -16,9 +16,15 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.3v (Main GUI)
+- Place method of positioning Tkinter
+- Edit/New buttons
+- Treeview of database
+- Title and logo
+
 ### 0.1.2v (Database functions)
 - ChangeDB button working
-- DB universal functions created 
+- DB universal functions created
 
 ### 0.1.1v (Database File SQL)
 - SQLite setting
