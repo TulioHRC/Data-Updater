@@ -25,7 +25,7 @@ class MainApp: # Main class
             self.db = db.getDatabase("Database")
         except: # Create database of filename
             db.createDatabase("Database", {"Filename": "TEXT"})
-            db.addToDatabase("Database", "Filename", ("./database.xls", ))
+            db.addToSQLDatabase("Database", "Filename", ("./database.xls", ))
 
         self.db = db.getDatabase("Database")["Filename"].values[0]
 
@@ -67,11 +67,11 @@ class MainApp: # Main class
 
 
         # GUI main buttons
-        self.new = Button(self.master, text="New")
+        self.new = Button(self.master, text="New", command=self.Frame)
         self.new.pack()
         self.new.place(bordermode=OUTSIDE, relheight=.1, relwidth=.25, relx=.05, rely=.85, anchor="nw")
 
-        self.edit = Button(self.master, text="Edit")
+        self.edit = Button(self.master, text="Edit", command=lambda: self.Frame(edit=1))
         self.edit.pack()
         self.edit.place(bordermode=OUTSIDE, relheight=.1, relwidth=.25, relx=.35, rely=.85, anchor="nw")
 
@@ -79,7 +79,7 @@ class MainApp: # Main class
     def changeDB(self, file):
         try:
             db.createDatabase("Database", {"Filename": "TEXT"})
-            db.addToDatabase("Database", "Filename", (file, ))
+            db.addToSQLDatabase("Database", "Filename", (file, ))
             print("Database local changed.")
 
             self.dbLabel["text"] = file
@@ -87,8 +87,44 @@ class MainApp: # Main class
             messagebox.showerror("ERROR", e)
 
 
+    class Frame: # Edit and New Frame - Inherit Object
+        def __init__(self, edit=0):
+            self.screen = Toplevel()
+            title = "Edit Data" if edit else "New Data"
+            self.screen.title(f"{title}") #if edit else "New Data"}")
+            self.screen.grab_set() # Defines main window
+            self.screen.geometry(f"{int(app.appSizes[0]*.6)}x{int(app.appSizes[1]*.6)}+{app.appSizes[2]}+{app.appSizes[3]}")
+
+            self.nameLabel = Label(self.screen, text="Name")
+            self.nameLabel.pack()
+            self.nameLabel.place(bordermode=OUTSIDE, relheight=.15, relwidth=.35, relx=.1, rely=.05)
+            self.nameEntry = Entry(self.screen)
+            self.nameEntry.pack()
+            self.nameEntry.place(bordermode=OUTSIDE, relheight=.15, relwidth=.35, relx=.55, rely=.05)
+
+            self.valueLabel = Label(self.screen, text="Value")
+            self.valueLabel.pack()
+            self.valueLabel.place(bordermode=OUTSIDE, relheight=.15, relwidth=.35, relx=.1, rely=.3)
+            self.valueEntry = Entry(self.screen)
+            self.valueEntry.pack()
+            self.valueEntry.place(bordermode=OUTSIDE, relheight=.15, relwidth=.35, relx=.55, rely=.3)
+
+            self.autoMode = Button(self.screen, text="Auto Mode")
+            self.autoMode.pack()
+            self.autoMode.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.55)
+
+            if not edit:
+                self.createButton = Button(self.screen, text=title,
+                                            command=lambda: db.addToDatabase(app.database, app.db))
+                # app.database it's the excel dataframe,and the app.db is the filename of the excel
+                self.createButton.pack()
+                self.createButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
+
+
 
 def main(): # Function to initializate the app
+    global app, root
+
     root = Tk() # GUI creation
     app = MainApp(root)
     root.mainloop()

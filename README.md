@@ -16,6 +16,10 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.4v ("New" Frame)
+- "New" Frame
+- New/Edit buttons
+
 ### 0.1.3v (Main GUI)
 - Place method of positioning Tkinter
 - Edit/New buttons
