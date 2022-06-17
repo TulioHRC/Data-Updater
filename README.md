@@ -16,6 +16,11 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.5v (Excel Functions)
+- Add to Functions
+- Messagebox
+- Anti-errors system
+
 ### 0.1.4v ("New" Frame)
 - "New" Frame
 - New/Edit buttons

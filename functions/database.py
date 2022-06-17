@@ -1,5 +1,6 @@
 import sqlite3 as sql
 import pandas as pd
+from tkinter import messagebox
 
 def createDatabase(name, schema): # schema format is {"column": "SQL Type"}
     con = sql.connect("./data/data.sqlite")
@@ -32,10 +33,17 @@ def addToSQLDatabase(name, schema, content): # schema format here is "column1, c
 
     con.close()
 
-def addToDatabase(dataframe, file, newData): # Adding to the main DataBase
+def addToDatabase(dataframe, file, newData, restartFunc): # Adding to the main DataBase
     # newData is in the according format (column1, column2, ...)
-    print(dataframe)
-    print(file)
+    try:
+        newDataframe = pd.concat([dataframe, newData], ignore_index=True)
+        newDataframe.to_excel(file, index=False)
+
+        messagebox.showinfo("Data added", "The new data was added!")
+
+        restartFunc() # Restart app
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error while adding data to the database: \n{e}")
 
 def getDatabase(name):
     con = sql.connect(f"./data/data.sqlite")

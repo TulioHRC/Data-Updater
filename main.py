@@ -86,6 +86,10 @@ class MainApp: # Main class
         except Exception as e:
             messagebox.showerror("ERROR", e)
 
+    def restart(self):
+        self.master.destroy()
+        main()
+
 
     class Frame: # Edit and New Frame - Inherit Object
         def __init__(self, edit=0):
@@ -115,7 +119,10 @@ class MainApp: # Main class
 
             if not edit:
                 self.createButton = Button(self.screen, text=title,
-                                            command=lambda: db.addToDatabase(app.database, app.db))
+                                command=lambda: db.addToDatabase(app.database, app.db, pd.DataFrame(data={
+                                    "Name": [self.nameEntry.get()],
+                                    "Value": [self.valueEntry.get()]
+                                }), app.restart))
                 # app.database it's the excel dataframe,and the app.db is the filename of the excel
                 self.createButton.pack()
                 self.createButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
