@@ -45,6 +45,19 @@ def addToDatabase(dataframe, file, newData, restartFunc): # Adding to the main D
     except Exception as e:
         messagebox.showerror("ERROR", f"Error while adding data to the database: \n{e}")
 
+def editDatabase(dataframe, file, idInfo, newValues, columns, restartFunc):
+    try:
+        # idInfo is [column, value]
+        newDataframe = dataframe.copy()
+        newDataframe.loc[list(dataframe[idInfo[0]].values).index(idInfo[1]), columns] = newValues
+        newDataframe.to_excel(file, index=False)
+
+        messagebox.showinfo("Data Edited", "The new data was added into the database!")
+
+        restartFunc()
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error while editing data in the database: /n{e}")
+
 def getDatabase(name):
     con = sql.connect(f"./data/data.sqlite")
     cur = con.cursor()

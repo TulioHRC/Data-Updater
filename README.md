@@ -16,6 +16,10 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.6v (Edit Frame)
+- Edit Frame (pre-default)
+- Edit functions
+
 ### 0.1.5v (Excel Functions)
 - Add to Functions
 - Messagebox

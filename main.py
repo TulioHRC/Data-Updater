@@ -71,7 +71,7 @@ class MainApp: # Main class
         self.new.pack()
         self.new.place(bordermode=OUTSIDE, relheight=.1, relwidth=.25, relx=.05, rely=.85, anchor="nw")
 
-        self.edit = Button(self.master, text="Edit", command=lambda: self.Frame(edit=1))
+        self.edit = Button(self.master, text="Edit", command=lambda: self.Frame(edit=self.tree.item(self.tree.focus())))
         self.edit.pack()
         self.edit.place(bordermode=OUTSIDE, relheight=.1, relwidth=.25, relx=.35, rely=.85, anchor="nw")
 
@@ -126,7 +126,24 @@ class MainApp: # Main class
                 # app.database it's the excel dataframe,and the app.db is the filename of the excel
                 self.createButton.pack()
                 self.createButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
+            else:
+                try:
+                    self.nameEntry.delete(0, END)
+                    self.nameEntry.insert(0, edit["values"][0])
 
+                    self.valueEntry.delete(0, END)
+                    self.valueEntry.insert(0, edit["values"][1])
+
+                    self.editButton = Button(self.screen, text=title,
+                                    command=lambda: db.editDatabase(app.database, app.db,
+                                                        ["Name", edit["values"][0]],
+                                                        [self.nameEntry.get(), self.valueEntry.get()],
+                                                        ["Name", "Value"],
+                                                        app.restart))
+                    self.editButton.pack()
+                    self.editButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
+                except Exception as e:
+                    messagebox.showerror("ERROR", "No data is selected, so the program can't open this page.")
 
 
 def main(): # Function to initializate the app
