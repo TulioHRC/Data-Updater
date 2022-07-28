@@ -16,6 +16,11 @@ Objectives:
 - Adaptable
 
 Log:
+### 0.1.7v (Auto Mode)
+- Add frame with auto mode
+- Edit frame with auto mode
+- Auto Mode for: coinmarketcap.com, ...
+
 ### 0.1.6v (Edit Frame)
 - Edit Frame (pre-default)
 - Edit functions
