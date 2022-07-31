@@ -1,6 +1,7 @@
 # Libs Import
 from bs4 import BeautifulSoup as BS
 import requests
+import numpy as np
 
 # Function to web scrapt data from some sources
 def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitcoin
@@ -23,5 +24,24 @@ def sourcesList():   # Returns the list of websites that are compatible to the a
     return ["coinmarketcap"]
 
 
-def autoLoad():   # Run the auto mode and save new data in the database
-    pass ### ....
+def autoLoad(database, source):   # Run the auto mode and save new data in the database 
+    # database = xls file readed; source = xls file local;
+    try:
+        dbList = database.to_numpy().tolist()
+        db = database.copy()
+
+        changes = 0 # Number of changes made, to avoid not usefull processing
+
+        for row in dbList:
+            if row[-1] == row[-1]: # NaN returns false
+                db.loc[dbList.index(row), "Value"] = getData(row[-1].split("-")[0], row[-1].split("-")[1])
+                if row[-1] != db.loc[dbList.index(row), "Value"]:  # Change made
+                    changes += 1
+
+        if changes:
+            db.to_excel(source, index=False) # Save Changes
+
+        return db
+    except Exception as e:
+        print(e)
+    

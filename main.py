@@ -61,6 +61,7 @@ class MainApp: # Main class
 
         # Database Read
         self.database = pd.read_excel(self.db)
+        self.database = auto.autoLoad(self.database, self.db) # Auto reloads the values that are in auto mode
 
         df_rows = self.database.to_numpy().tolist() # Database in a list of lists
         for row in df_rows:
