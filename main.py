@@ -118,7 +118,7 @@ class MainApp: # Main class
         
         def testApply(self, source, name, changeFunc):
             if auto.getData(source, name): # If it exists
-                changeFunc(f"{source}-{name}")
+                changeFunc(f"{source};{name}")
                 messagebox.showinfo("Auto mode saved")
                 self.w.destroy()
             else:
