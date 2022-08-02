@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 from functions import files as f
 from functions import database as db
+from functions import auto
 
 
 class MainApp: # Main class
@@ -60,6 +61,7 @@ class MainApp: # Main class
 
         # Database Read
         self.database = pd.read_excel(self.db)
+        self.database = auto.autoLoad(self.database, self.db) # Auto reloads the values that are in auto mode
 
         df_rows = self.database.to_numpy().tolist() # Database in a list of lists
         for row in df_rows:
@@ -89,6 +91,39 @@ class MainApp: # Main class
     def restart(self):
         self.master.destroy()
         main()
+    
+    class AutoSetup:
+        def __init__(self, changeAuto):
+            self.w = Toplevel()
+            self.w.title("Auto mode Setup")
+            self.w.grab_set()
+            self.w.geometry(f"{int(app.appSizes[0]*.4)}x{int(app.appSizes[1]*.4)}+{app.appSizes[2]}+{app.appSizes[3]}")
+
+            # Select between the compatibility websites (coinmarketcap)
+            self.source = StringVar()
+            self.sourceMenu = OptionMenu(self.w, self.source, *auto.sourcesList())
+            self.sourceMenu.pack()
+            self.sourceMenu.place(bordermode=OUTSIDE, relheight=.2, relwidth=.8, relx=.1, rely=.05)
+            # Object name Entry
+            self.nameL = Label(self.w, text="Object Name")
+            self.nameL.pack()
+            self.nameL.place(bordermode=OUTSIDE, relheight=.2, relwidth=.8, relx=.1, rely=.25)
+            self.name = Entry(self.w)
+            self.name.pack()
+            self.name.place(bordermode=OUTSIDE, relheight=.2, relwidth=.8, relx=.1, rely=.45)
+
+            self.confirm = Button(self.w, text="Apply", command=lambda: self.testApply(self.source.get(), self.name.get(), changeAuto))
+            self.confirm.pack()
+            self.confirm.place(bordermode=OUTSIDE, relheight=.2, relwidth=.4, relx=.3, rely=.7)
+        
+        def testApply(self, source, name, changeFunc):
+            if auto.getData(source, name): # If it exists
+                changeFunc(f"{source};{name}")
+                messagebox.showinfo("Auto mode saved")
+                self.w.destroy()
+            else:
+                messagebox.showerror("Error", "Nothing can be finded in the filters you selected.")
+
 
 
     class Frame: # Edit and New Frame - Inherit Object
@@ -113,15 +148,18 @@ class MainApp: # Main class
             self.valueEntry.pack()
             self.valueEntry.place(bordermode=OUTSIDE, relheight=.15, relwidth=.35, relx=.55, rely=.3)
 
-            self.autoMode = Button(self.screen, text="Auto Mode")
+            self.autoMode = Button(self.screen, text="Auto Mode", command=lambda: app.AutoSetup(self.changeAuto))
             self.autoMode.pack()
             self.autoMode.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.55)
+
+            self.auto = "" # "Source-Name"
 
             if not edit:
                 self.createButton = Button(self.screen, text=title,
                                 command=lambda: db.addToDatabase(app.database, app.db, pd.DataFrame(data={
                                     "Name": [self.nameEntry.get()],
-                                    "Value": [self.valueEntry.get()]
+                                    "Value": [self.valueEntry.get()],
+                                    "Auto": [self.auto]
                                 }), app.restart))
                 # app.database it's the excel dataframe,and the app.db is the filename of the excel
                 self.createButton.pack()
@@ -134,16 +172,21 @@ class MainApp: # Main class
                     self.valueEntry.delete(0, END)
                     self.valueEntry.insert(0, edit["values"][1])
 
+                    self.auto = edit["values"][2]
+
                     self.editButton = Button(self.screen, text=title,
                                     command=lambda: db.editDatabase(app.database, app.db,
                                                         ["Name", edit["values"][0]],
-                                                        [self.nameEntry.get(), self.valueEntry.get()],
-                                                        ["Name", "Value"],
+                                                        [self.nameEntry.get(), self.valueEntry.get(), self.auto],
+                                                        ["Name", "Value", "Auto"],
                                                         app.restart))
                     self.editButton.pack()
                     self.editButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
                 except Exception as e:
                     messagebox.showerror("ERROR", "No data is selected, so the program can't open this page.")
+            
+        def changeAuto(self, newAuto):
+            self.auto = newAuto
 
 
 def main(): # Function to initializate the app
