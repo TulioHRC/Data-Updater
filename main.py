@@ -35,7 +35,7 @@ class MainApp: # Main class
         self.dbLabel.pack()
         self.dbLabel.place(bordermode=OUTSIDE, relheight=.05, relwidth=.3, relx=.65, rely=.8, anchor="nw")
 
-        self.dbDefiner = Button(self.master, text="Change DB", command=lambda: f.fileSelect([("Excel files", ".xls")], self.changeDB))
+        self.dbDefiner = Button(self.master, text="Change DB", command=lambda: f.fileSelect([("Excel files Old", ".xls"), ("Excel files", ".xlsx")], self.changeDB))
         self.dbDefiner.pack()
         self.dbDefiner.place(bordermode=OUTSIDE, relheight=.1, relwidth=.3, relx=.65, rely=.85, anchor="nw")
 
@@ -80,6 +80,7 @@ class MainApp: # Main class
 
     def changeDB(self, file):
         try:
+            if file == "": return False
             db.createDatabase("Database", {"Filename": "TEXT"})
             db.addToSQLDatabase("Database", "Filename", (file, ))
             print("Database local changed.")
@@ -91,7 +92,7 @@ class MainApp: # Main class
     def restart(self):
         self.master.destroy()
         main()
-    
+
     class AutoSetup:
         def __init__(self, changeAuto):
             self.w = Toplevel()
@@ -115,7 +116,7 @@ class MainApp: # Main class
             self.confirm = Button(self.w, text="Apply", command=lambda: self.testApply(self.source.get(), self.name.get(), changeAuto))
             self.confirm.pack()
             self.confirm.place(bordermode=OUTSIDE, relheight=.2, relwidth=.4, relx=.3, rely=.7)
-        
+
         def testApply(self, source, name, changeFunc):
             if auto.getData(source, name): # If it exists
                 changeFunc(f"{source};{name}")
@@ -184,7 +185,7 @@ class MainApp: # Main class
                     self.editButton.place(bordermode=OUTSIDE, relheight=.15, relwidth=.8, relx=.1, rely=.8)
                 except Exception as e:
                     messagebox.showerror("ERROR", "No data is selected, so the program can't open this page.")
-            
+
         def changeAuto(self, newAuto):
             self.auto = newAuto
 
