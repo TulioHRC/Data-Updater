@@ -16,6 +16,7 @@ Objectives:
 - Adaptable
 
 Log:
+
 ### 0.1.7v (Auto Mode)
 - Add frame with auto mode
 - Edit frame with auto mode

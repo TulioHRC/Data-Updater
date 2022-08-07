@@ -3,6 +3,20 @@ from bs4 import BeautifulSoup as BS
 import requests
 import numpy as np
 
+# Function to re-write the return of Web Scrapping to the Excel file
+def rightText(value):
+    newValue = value
+
+    dotIndex = newValue.find(".")
+    periodIndex = newValue.find(",")
+    if periodIndex and dotIndex: # If exist both
+        if dotIndex > periodIndex: # . after ,
+            newValue = newValue.replace(",", "")
+            newValue = newValue.replace(".", ",")
+
+    return newValue
+
+
 # Function to web scrapt data from some sources
 def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitcoin
     try:
@@ -13,16 +27,16 @@ def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitc
             soup = BS(page.text, "html.parser")
 
             if soup.find(class_="priceValue smallerPrice").find("span"):
-                return str(soup.find(class_="priceValue smallerPrice").find("span").string.strip())[2:]
-        
+                return rightText(str(soup.find(class_="priceValue smallerPrice").find("span").string.strip())[2:])
+
         elif source == "investing":
             page = requests.get(f"https://br.investing.com/equities/{dataName}")
 
             soup = BS(page.text, "html.parser")
 
             if soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span"):
-                return str(soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span").string.strip())
-    
+                return rightText(str(soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span").string.strip()))
+
     except Exception as e:
         print(f"An error has occured!\n{e}\n")
         return False
@@ -32,7 +46,7 @@ def sourcesList():   # Returns the list of websites that are compatible to the a
     return ["coinmarketcap", "investing"]
 
 
-def autoLoad(database, source):   # Run the auto mode and save new data in the database 
+def autoLoad(database, source):   # Run the auto mode and save new data in the database
     # database = xls file readed; source = xls file local;
     try:
         dbList = database.to_numpy().tolist()
@@ -53,4 +67,3 @@ def autoLoad(database, source):   # Run the auto mode and save new data in the d
         return db
     except Exception as e:
         print(e)
-    
