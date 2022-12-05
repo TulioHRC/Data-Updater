@@ -29,11 +29,9 @@ def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitc
             if soup.find(class_="priceValue smallerPrice").find("span"):
                 return rightText(str(soup.find(class_="priceValue smallerPrice").find("span").string.strip())[2:])
         elif source == "infomoney stock":
-            print("a")
             page = requests.get(f"https://www.infomoney.com.br/cotacoes/b3/acao/{dataName}/")
 
             soup = BS(page.text, "html.parser")
-            print(soup)
 
             if soup.find(class_="value").find("p"):
                 return rightText(str(soup.find(class_="value").find("p").string))
@@ -42,8 +40,8 @@ def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitc
 
             soup = BS(page.text, "html.parser")
 
-            if soup.find(class_="value").find("p"):
-                return rightText(str(soup.find(class_="value").find("p").string))
+            if soup.find(class_="typography__display--2-noscale typography--numeric spacing--mr1").string:
+                return rightText(str(soup.find(class_="typography__display--2-noscale typography--numeric spacing--mr1").string))
 
         #elif source == "investing": -> Old investing compatibility
             #page = requests.get(f"https://br.investing.com/equities/{dataName}")
