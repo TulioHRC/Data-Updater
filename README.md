@@ -17,6 +17,10 @@ Objectives:
 
 Log:
 
+### 0.1.8v (Sources fix)
+Investing it's no more compatible
+- Auto mode for infomoney.com.br
+
 ### 0.1.7v (Auto Mode)
 - Add frame with auto mode
 - Edit frame with auto mode

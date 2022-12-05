@@ -28,14 +28,30 @@ def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitc
 
             if soup.find(class_="priceValue smallerPrice").find("span"):
                 return rightText(str(soup.find(class_="priceValue smallerPrice").find("span").string.strip())[2:])
+        elif source == "infomoney stock":
+            print("a")
+            page = requests.get(f"https://www.infomoney.com.br/cotacoes/b3/acao/{dataName}/")
 
-        elif source == "investing":
-            page = requests.get(f"https://br.investing.com/equities/{dataName}")
+            soup = BS(page.text, "html.parser")
+            print(soup)
+
+            if soup.find(class_="value").find("p"):
+                return rightText(str(soup.find(class_="value").find("p").string))
+        elif source == "infomoney fii":
+            page = requests.get(f"https://www.infomoney.com.br/cotacoes/b3/fii/{dataName}/")
 
             soup = BS(page.text, "html.parser")
 
-            if soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span"):
-                return rightText(str(soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span").string.strip()))
+            if soup.find(class_="value").find("p"):
+                return rightText(str(soup.find(class_="value").find("p").string))
+
+        #elif source == "investing": -> Old investing compatibility
+            #page = requests.get(f"https://br.investing.com/equities/{dataName}")
+
+            #soup = BS(page.text, "html.parser")
+
+            #if soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span"):
+                #return rightText(str(soup.find(class_="instrument-price_instrument-price__3uw25 flex items-end flex-wrap font-bold").find("span").string.strip()))
 
     except Exception as e:
         print(f"An error has occured!\n{e}\n")
@@ -43,7 +59,7 @@ def getData(source, dataName):  # Ex.: source -> coinmarketcap; dataName -> bitc
 
 
 def sourcesList():   # Returns the list of websites that are compatible to the app
-    return ["coinmarketcap", "investing"]
+    return ["coinmarketcap", "infomoney stock", "infomoney fii"]
 
 
 def autoLoad(database, source):   # Run the auto mode and save new data in the database
@@ -60,6 +76,8 @@ def autoLoad(database, source):   # Run the auto mode and save new data in the d
                     db.loc[dbList.index(row), "Value"] = getData(row[-1].split(";")[0], row[-1].split(";")[1])
                     if row[-1] != db.loc[dbList.index(row), "Value"]:  # Change made
                         changes += 1
+
+        print(db)
 
         if changes:
             db.to_excel(source, index=False) # Save Changes
