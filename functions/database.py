@@ -1,5 +1,6 @@
 import sqlite3 as sql
 import pandas as pd
+import os
 from tkinter import messagebox
 
 def createDatabase(name, schema): # schema format is {"column": "SQL Type"}
@@ -67,5 +68,8 @@ def getDatabase(name):
     con.close()
 
     return df
+
+def deleteDatabaseFile():
+    os.remove("./data/data.sqlite")
 
 #def removeFromDatabase(name, pos): # Remove row from database

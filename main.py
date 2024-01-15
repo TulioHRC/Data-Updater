@@ -28,7 +28,13 @@ class MainApp: # Main class
             db.createDatabase("Database", {"Filename": "TEXT"})
             db.addToSQLDatabase("Database", "Filename", ("./database.xls", ))
 
-        self.db = db.getDatabase("Database")["Filename"].values[0]
+        try: # if file not found
+            self.db = db.getDatabase("Database")["Filename"].values[0]
+            self.database = pd.read_excel(self.db)
+            
+        except:
+            db.deleteDatabaseFile()
+            self.restart()
 
         # Database selector
         self.dbLabel = Label(self.master, text=self.db)
@@ -58,15 +64,13 @@ class MainApp: # Main class
             self.tree.heading(column, text=column)
             self.tree.column(column, minwidth=0, width=int(self.appSizes[0]*.4),
                     stretch=NO, anchor="center") # Auto Resize
-
-        # Database Read
-        self.database = pd.read_excel(self.db)
+        
+        # Database read
         self.database = auto.autoLoad(self.database, self.db) # Auto reloads the values that are in auto mode
 
         df_rows = self.database.to_numpy().tolist() # Database in a list of lists
         for row in df_rows:
             self.tree.insert("", "end", values=row)
-
 
         # GUI main buttons
         self.new = Button(self.master, text="New", command=self.Frame)
@@ -86,6 +90,7 @@ class MainApp: # Main class
             print("Database local changed.")
 
             self.dbLabel["text"] = file
+            self.restart()
         except Exception as e:
             messagebox.showerror("ERROR", e)
 
